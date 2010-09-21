@@ -1,0 +1,10 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+#starship-canvas {
+    position: absolute;
+    background-color: #050505;
+}
