@@ -34,7 +34,8 @@ var MovingEntity = function (game) {
                   y: 0,
                   dir: 0, // in degrees, 0 is 'down', 90 is 'right'
                   speed: 0,
-                  destroyed: false
+                  destroyed: false,
+                  wrap: true
                  };
 
     // Private functions:
@@ -88,14 +89,16 @@ var MovingEntity = function (game) {
         this.state.x += (Math.sin(this.game.util.deg2rad(this.state.dir)) * this.state.speed);
         this.state.y += (Math.cos(this.game.util.deg2rad(this.state.dir)) * this.state.speed);
 
-        this.state.x %= this.game.canvas.width;
-        this.state.y %= this.game.canvas.height;
+        if (this.state.wrap) {
+            this.state.x %= this.game.canvas.width;
+            this.state.y %= this.game.canvas.height;
 
-        if (this.state.x < 0) {
-            this.state.x = this.game.canvas.width - this.state.x;
-        }
-        if (this.state.y < 0) {
-            this.state.y = this.game.canvas.height - this.state.y;
+            if (this.state.x < 0) {
+                this.state.x = this.game.canvas.width - this.state.x;
+            }
+            if (this.state.y < 0) {
+                this.state.y = this.game.canvas.height - this.state.y;
+            }
         }
 
         return this.control(cur_time, delta_time);

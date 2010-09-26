@@ -54,6 +54,9 @@ var Game = function () {
             $.doTimeout('resize', 100, resizeCanvas);
         });
         $(window).bind('keydown', function (e) {
+            if (self.entities.message) {
+                self.entities.message.state.speed = 10;
+            }
             switch(e.which) {
                 case 37: // left arrow
                     entities.ship.beginRotate(1);
@@ -119,7 +122,7 @@ var Game = function () {
         });
 
         if (!self.entities.target) {
-            self.entities.target = new Target(self, 100, 100, 45, 5, 20);
+            self.entities.target = new Target(self, self.canvas.width/2, 200, 45, 5, 20);
         }
         $.doTimeout('update-game', tics, update);
     };
@@ -141,10 +144,21 @@ var Game = function () {
 
     this.start = function() {
         entities.stars = new Stars(this);
-        entities.target = new Target(this, 100, 100, 45, 5, 20);
+        entities.target = new Target(this, this.canvas.width/2, 200, 45, 5, 20);
         entities.ship = new Ship(this, this.canvas.width / 2, this.canvas.height / 2, 0, 0);
         entities.bullets = new Bullets(this);
-
+        entities.message = new Message(this,
+                                       ["Starship",
+                                        "An HTML5 canvas demo",
+                                        "Shoot the target",
+                                        "Arrow keys: move",
+                                        "x: fire"
+                                       ],
+                                       this.canvas.width/2,
+                                       this.canvas.height/2 - 125,
+                                       'bold 50px sans-serif',
+                                       'rgba(255, 255, 255, 0.5)',
+                                       'center');
         $.doTimeout('update-game', tics, update);
     };
 
