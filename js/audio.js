@@ -107,9 +107,8 @@ var AudioStream = function(id) {
     // Public functions:
 
     this.set = function (id) {
-        var orig = $($('.sound#' + id)[0]);
+        var orig = $('.sound#' + id)[0];
         this.audio_obj.src = orig.src;
-
 
         var now = (new Date()).getTime();
         this.end_time = now + orig.duration * 1000;
