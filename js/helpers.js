@@ -107,11 +107,11 @@ AnEntity.prototype = new MovingEntity;
 var AnObject = function () {
     // Private vars:
 
-    var self = this
+    var self = this; // Reference back to 'this' for private functions.
 
     // Public vars:
 
-    this.public = "public"
+    this.public = "public";
 
     // Private functions:
 
@@ -129,5 +129,6 @@ var AnObject = function () {
     init();
 
     return this;
+};
 
  */

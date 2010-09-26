@@ -21,6 +21,13 @@
 
  */
 
+/*
+ * Some ideas and inspiration from:
+ *  http://www.somethinghitme.com/projects/jslander/
+ *  http://www.ferretarmy.com/files/canvas/fullScreenCanvas/fullScreenCanvas.html
+ *  http://diveintohtml5.org/canvas.html
+ */
+
 var Game = function () {
     // Private vars:
 
@@ -37,6 +44,7 @@ var Game = function () {
     this.context = null;
 
     this.entities = entities;
+
     // Private functions:
 
     function init () {
@@ -45,6 +53,7 @@ var Game = function () {
         self.context = self.canvas.getContext("2d");
 
         self.util = new Util();
+        self.audio = new AudioManager();
 
         resizeCanvas();
 
@@ -169,6 +178,7 @@ var Game = function () {
     return true;
 };
 
+// Init and run the game
 $(document).ready(function () {
     var game = new Game();
     game.start();

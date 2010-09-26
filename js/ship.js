@@ -117,6 +117,8 @@ var Ship = function (game, x, y, dir, speed) {
                                           Math.cos(this.game.util.deg2rad(this.state.bearing)) * 14 + this.state.y,
                                           this.state.bearing,
                                           this.state.speed + 5);
+        var snd = this.game.audio.add('bullet_shot');
+        snd.play();
     };
 
     return this;

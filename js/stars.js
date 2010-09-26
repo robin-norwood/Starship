@@ -26,6 +26,8 @@ var Stars = function(game) {
      *
      * Stars that twinkle.  Yes, I know, stars don't twinkle outside
      * of the atmosphere.  I don't care.  I wanted twinkly stars.
+     *
+     * FIXME: Using ImageData and CanvasPixelArray would probably be faster.
      */
 
     // Private vars:
