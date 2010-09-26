@@ -1,4 +1,4 @@
-Starship - An HTML 5 game.
+StarShip - An HTML 5 game.
 
 This simple game is my personal project to learn a little about HTML 5
 and JavaScript.  It uses <canvas>, <audio>, and JQuery.
@@ -7,5 +7,4 @@ The code is available under the GPL, see COPYING for details.
 
 The media is available under various creative commons licenses.  See
 attrib.txt for details.
-
 
