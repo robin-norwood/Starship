@@ -78,7 +78,7 @@ var Ship = function (game, x, y, dir, speed) {
 
     this.draw = function() {
         // Draw the object.
-        this.game.context.strokeStyle = "pink";
+        this.game.context.strokeStyle = "HotPink"; // That's right, a hot pink spaceship.
         this.game.context.lineWidth = 2;
         this.game.context.beginPath();
         this.game.context.moveTo(Math.sin(this.game.util.deg2rad(this.state.bearing)) * 14 + this.state.x,
