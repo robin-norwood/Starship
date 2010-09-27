@@ -133,7 +133,6 @@ var TargetShard = function(game, x, y, dir, speed, inner_radius, outer_radius, s
                           duration: 0
                          });
 
-    console.log("start: " + this.state.start_angle + ", end: " + this.state.end_angle);
     // Public vars:
 
     // Private functions:
