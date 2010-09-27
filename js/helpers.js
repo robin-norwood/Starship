@@ -64,9 +64,10 @@ var Util = function () {
 
 var AnEntity = function (game, x, y, dir, speed) {
     // Private vars:
-    self = this; // Reference back to 'this' for private functions.
+    var self = this; // Reference back to 'this' for private functions.
     this.game = game;
 
+    this.state = $.extend({}, this.state); // Copy the base prototype's state object.
     $.extend(this.state, {x: x,
                           y: y,
                           dir: dir == null ? 0 : dir, // in degrees, 0 is 'down', 90 is 'right'
