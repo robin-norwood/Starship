@@ -106,6 +106,7 @@ var Game = function () {
     };
 
     var update = function () {
+        /* Main loop */
         var curTime = (new Date()).getTime();
         var deltaTime = curTime - lastTime;
         lastTime = curTime;
