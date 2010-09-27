@@ -48,7 +48,14 @@ var AudioManager = function () {
 
     // Public functions:
 
+    this.play = function(id, name) {
+        // Shortcut that adds sound and plays it.
+        var snd = this.add(id, name);
+        snd.play();
+    };
+
     this.add = function(id, name) {
+        // Add sound, return AudioStream object, ready to play().
         var the_stream = null;
 
         if (name) {

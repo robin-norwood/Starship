@@ -27,6 +27,7 @@ var Target = function (game, x, y, dir, speed, radius) {
     this.check_hit = function (source, x, y) {
         if (this.game.util.distance(x, y, this.state.x, this.state.y) < this.state.inner_radius) {
             this.state.destroyed = true;
+            this.game.audio.play("shatter");
             return true;
         }
         return false;
