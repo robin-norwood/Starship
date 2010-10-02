@@ -27,7 +27,9 @@ var Stars = function(game) {
      * Stars that twinkle.  Yes, I know, stars don't twinkle outside
      * of the atmosphere.  I don't care.  I wanted twinkly stars.
      *
-     * FIXME: Using ImageData and CanvasPixelArray would probably be faster.
+     * Using ImageData and CanvasPixelArray should hypothetically be
+     * faster, but for some reason on Firefox 3.6, accessing ImageData
+     * is painfully slow.
      */
 
     // Private vars:
@@ -38,9 +40,9 @@ var Stars = function(game) {
     var star_density = 0.0004;
 
     var starcolors = [
-        ["#886666", "#997777", "#AA8888", "#BB9999", "#CCAAAA", "#BB9999", "#AA8888", "#997777"], // dim/red
-        ["#888888", "#999999", "#AAAAAA", "#BBBBBB", "#CCCCCC", "#BBBBBB", "#AAAAAA", "#999999"], // med/white
-        ["#AAAACC", "#BBBBDD", "#CCCCEE", "#DDDDFF", "#EEEEFF", "#DDDDFF", "#CCCCEE", "#BBBBDD"]  // bright/blue
+        ["#886666", "#AA8888", "#CCAAAA", "#AA8888"], // dim/red
+        ["#888888", "#AAAAAA", "#CCCCCC", "#AAAAAA"], // med/white
+        ["#AAAACC", "#CCCCEE", "#EEEEFF", "#CCCCEE"]  // bright/blue
     ];
 
     var coloroptions = starcolors.length;
