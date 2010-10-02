@@ -61,7 +61,9 @@ var Ship = function (game, x, y, dir, speed) {
             this.state.bearing += 360;
         }
 
-        this.accelerate(this.state.bearing, this.state.acceleration * this.state.acceleration_factor);
+        if (this.state.acceleration > 0) {
+            this.accelerate(this.state.bearing, this.state.acceleration * this.state.acceleration_factor);
+        }
 
         this.state.speed = Math.min(this.state.speed, this.state.max_speed);
         if (this.state.rot_speed > this.state.max_rotation) {
@@ -112,11 +114,14 @@ var Ship = function (game, x, y, dir, speed) {
     };
 
     this.fire = function () {
-        this.game.entities.bullets.create(this.game,
-                                          Math.sin(this.game.util.deg2rad(this.state.bearing)) * 14 + this.state.x,
-                                          Math.cos(this.game.util.deg2rad(this.state.bearing)) * 14 + this.state.y,
-                                          this.state.bearing,
-                                          this.state.speed + 5);
+        this.game.entities.bullets.fire(this.game,
+                                        Math.sin(this.game.util.deg2rad(this.state.bearing)) * 14 + this.state.x,
+                                        Math.cos(this.game.util.deg2rad(this.state.bearing)) * 14 + this.state.y,
+                                        this.state.dir,
+                                        this.state.speed,
+                                        this.state.bearing,
+                                        5);
+
         this.game.audio.play('bullet_shot');
     };
 

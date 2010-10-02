@@ -64,6 +64,12 @@ var MovingEntity = function (game) {
             return;
         }
 
+        if (this.state.speed == 0) {
+            this.state.speed = rate;
+            this.state.dir = dir;
+            return;
+        }
+
         // Vector addition.
         var angle_rad = this.game.util.deg2rad(180 - (this.state.dir - dir));
 
