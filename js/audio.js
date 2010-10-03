@@ -36,6 +36,8 @@ var AudioManager = function () {
     var named_streams = Object(); // For longrunning streams, like the music.
     var anonymous_streams = Array(); // For transient sounds, like bullets.
 
+    var muted = false;
+
     // Public vars:
 
     /* None */
@@ -48,18 +50,47 @@ var AudioManager = function () {
 
     // Public functions:
 
-    this.get = function(name) {
+    this.toggle_mute = function () {
+        muted = !muted;
+
+        if (muted) {
+            $.each(anonymous_streams, function (idx, stream) {
+                stream.volume = 0;
+            });
+
+            $.each(named_streams, function (k, stream) {
+                stream.volume = 0;
+                stream.pause();
+            });
+        }
+        else {
+            $.each(anonymous_streams, function (idx, stream) {
+                stream.volume = 100;
+            });
+
+            $.each(named_streams, function (k, stream) {
+                stream.volume = 100;
+                stream.play();
+            });
+        }
+    };
+
+    this.get = function (name) {
         return named_streams[name];
     };
 
-    this.play = function(id, name) {
+    this.play = function (id, name) {
         // Shortcut that adds sound and plays it.
+        if (muted) return;
+
         var snd = this.add(id, name);
         snd.play();
     };
 
-    this.add = function(id, name) {
+    this.add = function (id, name) {
         // Add sound, return AudioStream object, ready to play().
+        if (muted) return null;
+
         var the_stream = null;
 
         if (name) {

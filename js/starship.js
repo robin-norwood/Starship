@@ -70,30 +70,32 @@ var Game = function () {
             }
             switch(e.which) {
                 case 37: // left arrow
-                    entities.ship.beginRotate(1);
+                    self.entities.ship.beginRotate(1);
                     break;
                 case 38: // up arrow
-                    entities.ship.beginAccelerate(1);
+                    self.entities.ship.beginAccelerate(1);
                     break;
                 case 39: // right arrow
-                    entities.ship.beginRotate(-1);
+                    self.entities.ship.beginRotate(-1);
                     break;
                 case 88: // x
-                    entities.ship.fire();
+                    self.entities.ship.fire();
                     break;
+                case 77: // m
+                    self.audio.toggle_mute();
 
             };
         });
         $(window).bind('keyup', function (e) {
             switch(e.which) {
                 case 37: // left arrow
-                    entities.ship.endRotate();
+                    self.entities.ship.endRotate();
                     break;
                 case 38: // up arrow
-                    entities.ship.endAccelerate();
+                    self.entities.ship.endAccelerate();
                     break;
                 case 39: // right arrow
-                    entities.ship.endRotate();
+                    self.entities.ship.endRotate();
                     break;
             };
         });
@@ -165,6 +167,27 @@ var Game = function () {
         self.audio.play(playlist[playlist_pos].id, 'music');
     };
 
+    var start = function() {
+        entities.stars = new Stars(self);
+        entities.target = new Target(self, self.canvas.width/2, 200, 45, 5, 20);
+        entities.ship = new Ship(self, self.canvas.width / 2, self.canvas.height / 2, 0, 0);
+        entities.bullets = new Bullets(self);
+        entities.message = new Message(self,
+                                       ["Starship",
+                                        "An HTML5 canvas demo",
+                                        "Shoot the target",
+                                        "Arrow keys: move",
+                                        "x: fire",
+                                        "m: mute audio"
+                                       ],
+                                       self.canvas.width/2,
+                                       self.canvas.height/2 - 150,
+                                       'bold 50px sans-serif',
+                                       'rgba(255, 255, 255, 0.5)',
+                                       'center');
+        $.doTimeout('update-game', tics, update);
+    };
+
     // Public functions:
 
     this.check_for_hits = function (source, x, y) {
@@ -180,24 +203,21 @@ var Game = function () {
         return hit_something;
     };
 
-    this.start = function() {
-        entities.stars = new Stars(this);
-        entities.target = new Target(this, this.canvas.width/2, 200, 45, 5, 20);
-        entities.ship = new Ship(this, this.canvas.width / 2, this.canvas.height / 2, 0, 0);
-        entities.bullets = new Bullets(this);
-        entities.message = new Message(this,
-                                       ["Starship",
-                                        "An HTML5 canvas demo",
-                                        "Shoot the target",
-                                        "Arrow keys: move",
-                                        "x: fire"
-                                       ],
-                                       this.canvas.width/2,
-                                       this.canvas.height/2 - 125,
-                                       'bold 50px sans-serif',
-                                       'rgba(255, 255, 255, 0.5)',
-                                       'center');
-        $.doTimeout('update-game', tics, update);
+    this.load = function() {
+        // A short delay to give the various data (especially the music) time to load.
+        // FIXME: Instead, watch for a ready event on the audio object.
+
+        this.context.save();
+        this.context.font = 'bold 50px sans-serif';
+        this.context.textAlign = 'center';
+        this.context.fillStyle = 'rgba(255, 255, 255, 0.5)';
+
+        this.context.fillText("Loading...", this.canvas.width/2, this.canvas.height/2);
+        this.context.restore();
+
+        play_next();
+
+        $.doTimeout('update-game', 3000, start);
     };
 
     // Init:
@@ -210,6 +230,6 @@ var Game = function () {
 // Init and run the game
 $(document).ready(function () {
     var game = new Game();
-    game.start();
+    game.load();
 });
 
