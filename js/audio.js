@@ -48,6 +48,10 @@ var AudioManager = function () {
 
     // Public functions:
 
+    this.get = function(name) {
+        return named_streams[name];
+    };
+
     this.play = function(id, name) {
         // Shortcut that adds sound and plays it.
         var snd = this.add(id, name);
@@ -60,13 +64,11 @@ var AudioManager = function () {
 
         if (name) {
             the_stream = new AudioStream(id);
-            named_streams[name] = stream;
+            named_streams[name] = the_stream;
         }
         else {
-            var now = (new Date()).getTime();
-
             $.each(anonymous_streams, function (idx, stream) {
-                if (stream.end_time < now) {
+                if (stream.is_ended()) {
                     the_stream = stream;
                     stream.set(id);
                     return false;
@@ -118,9 +120,13 @@ var AudioStream = function(id) {
         this.audio_obj.src = orig.src;
 
         var now = (new Date()).getTime();
-        this.end_time = now + orig.duration * 1000;
+        this.start_time = now;
 
         this.audio_obj.load();
+    };
+
+    this.is_ended = function () {
+        return this.audio_obj.ended;
     };
 
     this.play = function() {

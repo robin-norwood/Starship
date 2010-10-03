@@ -1,1 +1,9 @@
+74395__Benboncan__Ricochet_3.wav:
+ By: Benboncan
+ From: http://www.freesound.org/samplesViewSingle.php?id=74395
+ License: http://creativecommons.org/licenses/sampling+/1.0/
 
+41348__datasoundsample__glass_shatter.wav:
+ By: datasoundsample
+ From: http://www.freesound.org/samplesViewSingle.php?id=41348
+ License: http://creativecommons.org/licenses/sampling+/1.0/

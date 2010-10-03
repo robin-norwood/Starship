@@ -1,3 +1,5 @@
+o Fix bullet acceleration bug.
+
 o Move handling of 'pieces' (bullets, target shards, etc) into
   starship.js main event loop (instead of handling all the logic in the
   container entity).
@@ -6,7 +8,7 @@ o Fix edge-rendering issues (maybe by drawing 2 or 3 copies of the object)
 
 o Draw stars with ImageData instead of fillRect
 
-o Fix multi-line message handline (line spacing is hard coded)
+o Fix multi-line message handling (line spacing is hard coded)
 
 o Gravity
 

@@ -36,7 +36,9 @@ var Game = function () {
     var lastTime = (new Date()).getTime();
     var entities = {};
 
-    var tics = 20; // Minimum ms per update
+    var tics = 40; // Minimum ms per update
+
+    var playlist_pos = -1;
 
     // Public vars:
 
@@ -131,10 +133,36 @@ var Game = function () {
             self.context.restore();
         });
 
+        // Create the target if it has been destroyed
         if (!self.entities.target) {
             self.entities.target = new Target(self, self.canvas.width/2, 200, 45, 5, 20);
         }
-        $.doTimeout('update-game', tics, update);
+
+        if (!self.audio.get('music') || self.audio.get('music').is_ended()) {
+            play_next();
+        }
+
+        var time = (new Date()).getTime() - curTime;
+        var delay = tics - time;
+        if (delay < 0) {
+            delay = 0;
+            if (console) {
+                console.log("Main loop took too long: " + time);
+            }
+        }
+
+        $.doTimeout('update-game', delay, update);
+    };
+
+    var play_next = function () {
+        var playlist = $('.music');
+        playlist_pos++;
+
+        if (playlist_pos > playlist.length - 1) {
+            playlist_pos = 0;
+        }
+
+        self.audio.play(playlist[playlist_pos].id, 'music');
     };
 
     // Public functions:
