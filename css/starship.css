@@ -4,7 +4,7 @@ body {
     height: 100%;
 }
 
-#starship-canvas {
+#starship_canvas {
     position: absolute;
     background-color: #050505;
 }
