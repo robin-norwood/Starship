@@ -8,3 +8,7 @@ body {
     position: absolute;
     background-color: #050505;
 }
+
+.image {
+    display: none;
+}

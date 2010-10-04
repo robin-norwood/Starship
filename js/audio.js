@@ -73,6 +73,8 @@ var AudioManager = function () {
                 stream.play();
             });
         }
+
+        return muted;
     };
 
     this.get = function (name) {

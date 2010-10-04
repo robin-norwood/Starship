@@ -36,9 +36,11 @@
     <script type="text/javascript" src="js/ship.js"></script>
     <script type="text/javascript" src="js/message.js"></script>
     <script type="text/javascript" src="js/audio.js"></script>
+    <script type="text/javascript" src="js/indicator.js"></script>
     <script type="text/javascript" src="js/starship.js"></script>
   </head>
   <body>
+
     <!-- Preload audio -->
     <!-- See sounds/attrib.txt -->
     <audio class="sound" id="bullet_shot" src="sounds/74395__Benboncan__Ricochet_3.wav" preload="auto"></audio>
@@ -58,6 +60,12 @@
     <audio class="sound music" id="09_Isundo" src="music/09 - Isundo.ogg" preload="none"></audio>
     <!-- Done with music -->
 
-    <canvas id="starship-canvas">This demo only works on browsers that support the HTML5 canvas attribute.</canvas>
+    <!-- Images -->
+    <!-- See images/attrib.txt -->
+    <img class="image" id="audio" src="images/audio.png"></img>
+    <img class="image" id="audio_mute" src="images/audio_mute.png"></img>
+    <!-- Done with images -->
+
+    <canvas id="starship_canvas">This demo only works on browsers that support HTML5.</canvas>
   </body>
 </html>

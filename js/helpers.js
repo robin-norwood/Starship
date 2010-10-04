@@ -38,19 +38,19 @@ var Util = function () {
 
     // Public functions:
 
-    this.distance = function(x1, y1, x2, y2) {
+    this.distance = function (x1, y1, x2, y2) {
         // distance between two pixels
 
         return Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2));
     };
 
-    this.deg2rad = function(deg) {
+    this.deg2rad = function (deg) {
         // degrees to radians
 
         return Math.PI * deg/180;
     };
 
-    this.rad2deg = function(rad) {
+    this.rad2deg = function (rad) {
         // radians to degrees
 
         return rad * 180 / Math.PI;
@@ -84,11 +84,11 @@ var AnEntity = function (game, x, y, dir, speed) {
 
     // Public functions:
 
-    this.control = function() {
+    this.control = function (curTime, deltaTime) {
         // Return false to destroy this entity
     };
 
-    this.draw = function() {
+    this.draw = function () {
         // Draw the object.
     };
 
@@ -122,7 +122,7 @@ var AnObject = function () {
 
     // Public functions:
 
-    this.public_f = function() {
+    this.public_f = function () {
     };
 
     // Init:

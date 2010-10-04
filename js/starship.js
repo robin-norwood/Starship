@@ -51,7 +51,7 @@ var Game = function () {
 
     function init () {
         /* Game initialization code.  Should run only once. */
-        self.canvas = $('#starship-canvas')[0];
+        self.canvas = $('#starship_canvas')[0];
         self.context = self.canvas.getContext("2d");
 
         self.util = new Util();
@@ -82,7 +82,13 @@ var Game = function () {
                     self.entities.ship.fire();
                     break;
                 case 77: // m
-                    self.audio.toggle_mute();
+                    var is_muted = self.audio.toggle_mute();
+                    if (is_muted) {
+                        self.entities.audio_indicator = new Indicator(self, self.canvas.width - 25, self.canvas.height - 25, 'audio_mute');
+                    }
+                    else {
+                        self.entities.audio_indicator = new Indicator(self, self.canvas.width - 25, self.canvas.height - 25, 'audio', 5000);
+                    }
 
             };
         });
@@ -141,7 +147,7 @@ var Game = function () {
         }
 
         if (!self.audio.get('music') || self.audio.get('music').is_ended()) {
-            play_next();
+            play_next(); // FIXME: This causes the game to 'jump' - figure out how to load next track in the background.
         }
 
         var time = (new Date()).getTime() - curTime;

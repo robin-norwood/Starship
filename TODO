@@ -1,12 +1,13 @@
 o Fix bullet acceleration bug.
 
 o Move handling of 'pieces' (bullets, target shards, etc) into
-  starship.js main event loop (instead of handling all the logic in the
-  container entity).
+  starship.js main event loop instead of handling all the logic in the
+  container entity.
 
 o Fix edge-rendering issues (maybe by drawing 2 or 3 copies of the object)
 
 o Draw stars with ImageData instead of fillRect
+ * Unfortunately, accessing ImageData is very, very slow on Firefox 3.6
 
 o Fix multi-line message handling (line spacing is hard coded)
 

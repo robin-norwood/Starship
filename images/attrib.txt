@@ -1,0 +1,10 @@
+audio.svg
+ By: nomade
+ From: http://www.openclipart.org/detail/74875
+ License: Public Domain
+
+audio_mute.svg
+ By: Robin Norwood
+ From: Based on audio.svg
+ License: Public Domain
+
