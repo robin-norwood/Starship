@@ -175,7 +175,7 @@ var Game = function () {
 
     var start = function() {
         entities.stars = new Stars(self);
-        entities.target = new Target(self, self.canvas.width/2, 200, 45, 5, 20);
+        entities.target = new Target(self, self.canvas.width/2, 150, 45, 5, 20);
         entities.ship = new Ship(self, self.canvas.width / 2, self.canvas.height / 2, 0, 0);
         entities.bullets = new Bullets(self);
         entities.message = new Message(self,
@@ -184,7 +184,8 @@ var Game = function () {
                                         "Shoot the target",
                                         "Arrow keys: move",
                                         "x: fire",
-                                        "m: mute audio"
+                                        "m: mute audio",
+                                        "Music: Musical Landscapes I by Galdson"
                                        ],
                                        self.canvas.width/2,
                                        self.canvas.height/2 - 150,

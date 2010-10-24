@@ -40,8 +40,8 @@ var Message = function (game, messages, x, y, font, style, align, dir, speed) {
                           style: style ? style : null,
                           align: align ? align : null,
                           lifetime: 0,
-                          move_time: 5000,
-                          max_lifetime: 15000,
+                          move_time: 15000,
+                          max_lifetime: 25000,
                           wrap: false
                          });
 
