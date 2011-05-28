@@ -86,10 +86,14 @@ var Stars = function(game) {
     };
 
     this.update = function(cur_time, delta_time) {
-        if (cur_time - last_time > 200) { // stars update (twinkle) every 200ms or so
-            last_time = cur_time;
+        // Update 6% of the stars each cycle. Arbitrary, but seems
+        // about right.
 
-            $.each(stars, updateStar);
+        var num_to_update = Math.floor(0.06 * stars.length);
+        var which = 0;
+        for (var i=0;i<num_to_update;i++) {
+            which = Math.floor(Math.random()*stars.length);
+            updateStar(which, stars[which]);
         }
 
         return true;
