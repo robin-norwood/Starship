@@ -24,8 +24,8 @@
 var Stars = function(game) {
     /* Container entity for stars.
      *
-     * Stars that twinkle.  Yes, I know, stars don't twinkle outside
-     * of the atmosphere.  I don't care.  I wanted twinkly stars.
+     * Stars that twinkle. Yes, I know, stars don't twinkle outside
+     * of the atmosphere. I don't care. I wanted twinkly stars.
      *
      * Using ImageData and CanvasPixelArray should hypothetically be
      * faster, but for some reason on Firefox 3.6, accessing ImageData
@@ -56,7 +56,7 @@ var Stars = function(game) {
     // Private functions:
 
     var init = function () {
-        // Initialization code.  Runs once per object.
+        // Initialization code. Runs once per object.
         var width = self.game.canvas.width;
         var height = self.game.canvas.height;
         var numstars = Math.floor(width * height * star_density);

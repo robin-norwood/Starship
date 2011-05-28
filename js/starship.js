@@ -33,7 +33,6 @@ var Game = function () {
 
     var self = this;
 
-    var lastTime = (new Date()).getTime();
     var entities = {};
 
     var tics = 40; // Minimum ms per update
@@ -44,6 +43,7 @@ var Game = function () {
 
     this.canvas = null;
     this.context = null;
+    this.lastTime = (new Date()).getTime();
 
     this.entities = entities;
 
@@ -118,8 +118,8 @@ var Game = function () {
     var update = function () {
         /* Main loop */
         var curTime = (new Date()).getTime();
-        var deltaTime = curTime - lastTime;
-        lastTime = curTime;
+        var deltaTime = curTime - self.lastTime;
+        self.lastTime = curTime;
 
         // Update everything's state
         $.each(self.entities, function (x,entity) {

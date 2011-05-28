@@ -25,7 +25,7 @@ var Ship = function (game, x, y, dir, speed) {
     // Private vars:
 
     var self = this;
-
+    var gun_cooldown = 200; // 5 shots/sec
     // Public vars:
 
     this.game = game;
@@ -42,7 +42,8 @@ var Ship = function (game, x, y, dir, speed) {
                           acceleration: 0,
                           rot_speed: 0,
                           rot_factor: .3,
-                          rotation: 0
+                          rotation: 0,
+                          lastShotTime: game.lastTime
                          });
 
     // Private functions:
@@ -81,6 +82,7 @@ var Ship = function (game, x, y, dir, speed) {
     this.draw = function() {
         // Draw the object.
         this.game.context.strokeStyle = "HotPink"; // That's right, a hot pink spaceship.
+                                                   // Got a problem with that?
         this.game.context.lineWidth = 2;
         this.game.context.beginPath();
         this.game.context.moveTo(Math.sin(this.game.util.deg2rad(this.state.bearing)) * 14 + this.state.x,
@@ -114,13 +116,16 @@ var Ship = function (game, x, y, dir, speed) {
     };
 
     this.fire = function () {
-        this.game.entities.bullets.fire(this.game,
-                                        Math.sin(this.game.util.deg2rad(this.state.bearing)) * 14 + this.state.x,
-                                        Math.cos(this.game.util.deg2rad(this.state.bearing)) * 14 + this.state.y,
-                                        this.state.dir,
-                                        this.state.speed,
-                                        this.state.bearing,
-                                        5);
+        if (this.game.lastTime - this.state.lastShotTime > gun_cooldown) {
+            this.game.entities.bullets.fire(this.game,
+                                            Math.sin(this.game.util.deg2rad(this.state.bearing)) * 14 + this.state.x,
+                                            Math.cos(this.game.util.deg2rad(this.state.bearing)) * 14 + this.state.y,
+                                            this.state.dir,
+                                            this.state.speed,
+                                            this.state.bearing,
+                                            5);
+            this.state.lastShotTime = this.game.lastTime;
+        }
 
         this.game.audio.play('bullet_shot');
     };
