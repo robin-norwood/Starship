@@ -40,7 +40,9 @@ var MovingEntity = function (game) {
 
     // Private functions:
 
-    /* None */
+    var comps = function (game, mag, ang) {
+        return [mag * Math.cos(game.util.deg2rad(ang)), mag * Math.sin(game.util.deg2rad(ang))];
+    };
 
     // Public functions:
 
@@ -70,23 +72,50 @@ var MovingEntity = function (game) {
             return;
         }
 
-        // Vector addition.
-        var angle_rad = this.game.util.deg2rad(180 - (this.state.dir - dir));
+        var new_dir = undefined;
+        var new_speed = undefined;
 
-        var new_speed = Math.sqrt(Math.pow(this.state.speed, 2) +
-                                  Math.pow(rate, 2) -
-                                  2 * this.state.speed * rate * Math.cos(angle_rad));
+        if ((this.state.dir - dir) == 0) { // 'forward'
+            new_dir = this.state.dir;
+            new_speed = this.state.speed + rate;
+        }
+        else if ((this.state.dir - dir) == 180) { // 'backward'
+            if (this.state.speed - rate > 0) {
+                new_dir = this.state.dir;
+                new_speed = this.state.speed - rate;
+            }
+            else {
+                new_dir = dir;
+                new_speed = rate - this.state.speed;
+            }
+        }
+        else if ((this.state.dir - dir) % 90 == 0) { // right angle
+            new_speed = Math.sqrt(Math.pow(this.state.speed, 2) + Math.pow(rate, 2));
+            new_dir = this.state.dir + this.game.util.rad2deg(Math.asin(rate / new_speed));
+        }
+        else {
+            // Vector addition.
+            var a = comps(this.game, this.state.speed, this.state.dir);
+            var b = comps(this.game, rate, dir);
 
-        var new_angle = Math.asin(rate * Math.sin(angle_rad) / new_speed);
-        var new_dir = this.state.dir - this.game.util.rad2deg(new_angle);
+            var rx = a[0] + b[0];
+            var ry = a[1] + b[1];
+            new_speed = Math.sqrt(Math.pow(rx, 2) + Math.pow(ry, 2));
+            new_dir = this.game.util.rad2deg(Math.atan(ry / rx));
+
+            if (rx < 0) {
+                new_dir += 180;
+            }
+        }
 
         this.state.speed = new_speed;
         if (new_speed) { // If new_speed drops to 0, new_dir becomes NaN
             this.state.dir = new_dir;
         }
         else {
-            this.state.dir = dir;
+            this.state.dir = dir % 360;
         }
+
     };
 
     this.update = function(cur_time, delta_time) {
