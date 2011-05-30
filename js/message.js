@@ -21,7 +21,7 @@
 
  */
 
-var Message = function (game, messages, x, y, font, style, align, dir, speed) {
+var Message = function (game, messages, x, y, font, style, align, dir, speed, move_time, max_lifetime) {
     // Private vars:
 
     var self = this;
@@ -40,8 +40,8 @@ var Message = function (game, messages, x, y, font, style, align, dir, speed) {
                           style: style ? style : null,
                           align: align ? align : null,
                           lifetime: 0,
-                          move_time: 15000,
-                          max_lifetime: 25000,
+                          move_time: move_time,
+                          max_lifetime: max_lifetime,
                           wrap: false
                          });
 
@@ -53,10 +53,10 @@ var Message = function (game, messages, x, y, font, style, align, dir, speed) {
 
     this.control = function(cur_time, delta_time) {
         this.state.lifetime += delta_time;
-        if (this.state.lifetime > this.state.move_time) {
+        if (this.state.move_time && this.state.lifetime > this.state.move_time) {
             this.state.speed += 0.5;
         }
-        if (this.state.lifetime > this.state.max_lifetime) {
+        if (this.state.max_lifetime && this.state.lifetime > this.state.max_lifetime) {
             return false;
         }
 

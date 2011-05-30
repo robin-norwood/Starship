@@ -57,8 +57,8 @@ var Bullets = function (game) {
         });
     };
 
-    this.fire = function (game, x, y, ship_dir, ship_speed, bearing, acceleration) {
-        this.bullets.push(new NormalBullet(game, x, y, ship_dir, ship_speed, bearing, acceleration));
+    this.fire = function (game, x, y, ship_dir, ship_speed, bearing, acceleration, lifetime) {
+        this.bullets.push(new NormalBullet(game, x, y, ship_dir, ship_speed, bearing, acceleration, lifetime));
     };
 
     return this;
@@ -67,7 +67,7 @@ var Bullets = function (game) {
 
 Bullets.prototype = new MovingEntity;
 
-var NormalBullet = function (game, x, y, ship_dir, ship_speed, bearing, acceleration) {
+var NormalBullet = function (game, x, y, ship_dir, ship_speed, bearing, acceleration, max_lifetime) {
     // Contained by 'Bullets' entity
 
     // Private vars:
@@ -83,7 +83,7 @@ var NormalBullet = function (game, x, y, ship_dir, ship_speed, bearing, accelera
                           dir: ship_dir == null ? 0 : ship_dir, // in degrees, 0 is 'down', 90 is 'right'
                           speed: ship_speed == null ? 0 : ship_speed,
                           lifetime: 0,
-                          max_lifetime: 2000
+                          max_lifetime: max_lifetime == null ? 1000 : max_lifetime
                          });
 
     // Private functions:
@@ -112,7 +112,7 @@ var NormalBullet = function (game, x, y, ship_dir, ship_speed, bearing, accelera
     this.draw = function() {
         // Draw the object.
         this.game.context.fillStyle = "red";
-        this.game.context.fillRect(this.state.x-1, this.state.y-1, 2, 2);
+        this.game.context.fillRect(this.state.x-1, this.state.y-1, 3, 3);
     };
 
     init();

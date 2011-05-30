@@ -96,13 +96,15 @@ var Target = function (game, x, y, dir, speed, radius) {
             });
         }
         else {
-            this.game.context.fillStyle = "#FFFF00";
+            // Outside
+            this.game.context.fillStyle = "rgba(255, 255, 0, 1)";
             this.game.context.beginPath();
             this.game.context.arc(this.state.x, this.state.y, this.state.outer_radius, 0, Math.PI*2, true);
             this.game.context.closePath();
             this.game.context.fill();
 
-            this.game.context.fillStyle = "#FF0000";
+            // Inside
+            this.game.context.fillStyle = "rgba(255, 0, 0, 1)";
             this.game.context.beginPath();
             this.game.context.arc(this.state.x, this.state.y, this.state.inner_radius, 0, Math.PI*2, true);
             this.game.context.closePath();

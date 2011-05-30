@@ -144,6 +144,7 @@ var Game = function () {
         // Create the target if it has been destroyed
         if (!self.entities.target) {
             self.entities.target = new Target(self, self.canvas.width/2, 200, 45, 5, 20);
+            self.entities.score.state.messages[0] += 1;
         }
 
         if (!self.audio.get('music') || self.audio.get('music').is_ended()) {
@@ -175,9 +176,10 @@ var Game = function () {
 
     var start = function() {
         entities.stars = new Stars(self);
-        entities.target = new Target(self, self.canvas.width/2, 150, 45, 5, 20);
+        entities.target = new Target(self, self.canvas.width / 2, 150, 45, 5, 20);
         entities.ship = new Ship(self, self.canvas.width / 2, self.canvas.height / 2, 0, 0);
         entities.bullets = new Bullets(self);
+        entities.score = new Message(self, [0], 5, 55, 'bold 50px sans-serif', 'rgba(255, 255, 255, 0.75)');
         entities.message = new Message(self,
                                        ["Starship",
                                         "An HTML5 canvas demo",
@@ -190,8 +192,13 @@ var Game = function () {
                                        self.canvas.width/2,
                                        self.canvas.height/2 - 150,
                                        'bold 50px sans-serif',
-                                       'rgba(255, 255, 255, 0.5)',
-                                       'center');
+                                       'rgba(255, 255, 255, 0.75)',
+                                       'center',
+                                       null,
+                                       null,
+                                       20000,
+                                       30000
+                                      );
         $.doTimeout('update-game', tics, update);
     };
 
