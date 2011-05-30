@@ -1,8 +1,8 @@
-o Fix bullet acceleration bug.
+o Switch to radians throughout instead of converting deg->rad all the time.
 
 o Move handling of 'pieces' (bullets, target shards, etc) into
   starship.js main event loop instead of handling all the logic in the
-  container entity.
+  container entity. ('MultipartEntity' base class?)
 
 o Fix edge-rendering issues (maybe by drawing 2 or 3 copies of the object)
 
@@ -18,3 +18,9 @@ o Collisions
 o Multiplayer
 
 o More 'stuff'. Ships, weapons, asteroids, planets, sounds, music, blah blah blah
+
+
+--DONE--
+
+o Fix bullet acceleration bug.
+
