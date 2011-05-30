@@ -83,19 +83,22 @@ var NormalBullet = function (game, x, y, ship_dir, ship_speed, bearing, accelera
                           dir: ship_dir == null ? 0 : ship_dir, // in degrees, 0 is 'down', 90 is 'right'
                           speed: ship_speed == null ? 0 : ship_speed,
                           lifetime: 0,
-                          max_lifetime: 1000
+                          max_lifetime: 2000
                          });
 
     // Private functions:
-
     function init() {
-        self.accelerate(bearing, acceleration);
+        return;
     }
 
     // Public functions:
 
     this.control = function(cur_time, delta_time) {
         // Return false to destroy this entity
+        if (this.state.lifetime == 0) {
+            this.accelerate(bearing, acceleration);
+        }
+
         this.state.lifetime += delta_time;
 
         if (this.state.lifetime > this.state.max_lifetime) {
