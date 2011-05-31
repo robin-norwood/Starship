@@ -179,7 +179,7 @@ var Game = function () {
         entities.target = new Target(self, self.canvas.width / 2, 150, 45, 5, 20);
         entities.ship = new Ship(self, self.canvas.width / 2, self.canvas.height / 2, 0, 0);
         entities.bullets = new Bullets(self);
-        entities.score = new Message(self, [0], 5, 55, 'bold 50px sans-serif', 'rgba(255, 255, 255, 0.75)');
+        entities.score = new Message(self, [0], 5, 29, '24px monospace', 'rgba(255, 255, 255, 0.75)');
         entities.message = new Message(self,
                                        ["Starship",
                                         "An HTML5 canvas demo",
