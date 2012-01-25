@@ -1,3 +1,5 @@
+o Fix lack of caching of sound files (ie, delay when playing shatter sound, etc)
+
 o Switch to radians throughout instead of converting deg->rad all the time.
 
 o Move handling of 'pieces' (bullets, target shards, etc) into
@@ -10,6 +12,8 @@ o Draw stars with ImageData instead of fillRect
  * Unfortunately, accessing ImageData is very, very slow on Firefox 3.6
 
 o Fix multi-line message handling (line spacing is hard coded)
+
+o Performance: make more faster
 
 o Gravity
 
@@ -24,3 +28,4 @@ o More 'stuff'. Ships, weapons, asteroids, planets, sounds, music, blah blah bla
 
 o Fix bullet acceleration bug.
 
+o Fix mute bug - muting and then unmuting doesn't resume the music until the next track loads...why?

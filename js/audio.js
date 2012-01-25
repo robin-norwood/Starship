@@ -149,10 +149,6 @@ var AudioManager = function (selector) {
         // Shortcut that loads sound and plays it.
         log("Playing " + id + " in stream " + name);
         var snd = this.load(id, name, volume);
-        log("THIS MUTED: " + this.muted + ", snd muted: " + snd.muted);
-        if (this.muted && ! snd.muted) {
-            snd.toggle_mute();
-        }
         snd.play(loop);
 
         return snd;
@@ -318,9 +314,6 @@ var AudioStream = function(master_volume) {
 
     this.set_volume = function (vol) {
         log("Setting volume to " + vol);
-        if (this.muted) {
-            return;
-        }
         if (vol < 0) {
             vol = 0;
         }
@@ -328,7 +321,6 @@ var AudioStream = function(master_volume) {
             vol = 100;
         }
 
-        log("MASTER: " + master_volume);
         vol = vol * (master_volume / 100);
 
         log("Vol set to " + vol);
@@ -379,8 +371,6 @@ var AudioStream = function(master_volume) {
             });
 
         }
-
-        return this;
     };
 
     this.pause = function() {
