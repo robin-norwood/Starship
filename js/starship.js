@@ -231,7 +231,7 @@ var Game = function () {
 
         play_next();
 
-        $.doTimeout('update-game', 3000, start);
+        $.doTimeout('update-game', 5000, start);
     };
 
     // Init:
