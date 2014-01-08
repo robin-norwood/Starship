@@ -4,7 +4,7 @@
    index.html - html for starship game.  See js/starship.js for the
    game code.
 
-   Copyright (c) 2010 Robin Norwood <robin.norwood@gmail.com>
+   Copyright (c) 2013 Robin Norwood <robin.norwood@gmail.com>
 
       This file is part of Starship.
 
@@ -22,23 +22,31 @@
     along with Starship.  If not, see <http://www.gnu.org/licenses/>.
 -->
   <head>
+    <title>Starship</title>
     <meta name="Description" content="Starship game"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Starship</title>
 
     <link href="css/starship.css" rel="stylesheet" type="text/css"/>
 
-    <script type="text/javascript" src="js/jquery/jquery-1.4.2.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script type="text/javascript" src="js/jquery/jquery.ba-dotimeout.js"></script>
-    <script type="text/javascript" src="js/helpers.js"></script>
+    <script type="text/javascript" src="js/util.js"></script>
+    <script type="text/javascript" src="js/sprite.js"></script>
+    <script type="text/javascript" src="js/screen.js"></script>
+    <script type="text/javascript" src="js/keyboard.js"></script>
+    <script type="text/javascript" src="js/controller.js"></script>
     <script type="text/javascript" src="js/entities.js"></script>
-    <script type="text/javascript" src="js/stars.js"></script>
-    <script type="text/javascript" src="js/bullet.js"></script>
-    <script type="text/javascript" src="js/targets.js"></script>
-    <script type="text/javascript" src="js/ship.js"></script>
-    <script type="text/javascript" src="js/message.js"></script>
     <script type="text/javascript" src="js/audio.js"></script>
-    <script type="text/javascript" src="js/indicator.js"></script>
+
+
+    <!-- Entities -->
+    <script type="text/javascript" src="js/entities/indicator.js"></script>
+    <script type="text/javascript" src="js/entities/stars.js"></script>
+    <script type="text/javascript" src="js/entities/bullet.js"></script>
+    <script type="text/javascript" src="js/entities/targets.js"></script>
+    <script type="text/javascript" src="js/entities/ship.js"></script>
+    <script type="text/javascript" src="js/entities/message.js"></script>
+
     <script type="text/javascript" src="js/starship.js"></script>
   </head>
   <body>

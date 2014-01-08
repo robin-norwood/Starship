@@ -2,22 +2,7 @@
 
    audio.js - Audio manager
 
-   Copyright (c) 2010 Robin Norwood <robin.norwood@gmail.com>
-
-      This file is part of Starship.
-
-    Starship is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Starship is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Starship.  If not, see <http://www.gnu.org/licenses/>.
+   Copyright (c) 2013 Robin Norwood <robin.norwood@rackspace.com>
 
  */
 
@@ -77,138 +62,132 @@ var AudioManager = function (selector) {
 
     var self = this;
 
-    var library = new Object(); // Library of audio objects
-    var named_streams = new Object(); // For longrunning streams, like music.
-    var named_streams_count = 0; // Javascript annoyance; no good way to count # of entries in an object
-    var transient_streams = new Array(); // For transient sounds, like sound effects.
-    var volume = 100;
+    self._library = new Object(); // Library of audio objects
+    self._named_streams = new Object(); // For longrunning streams, like music.
+    self._named_streams_count = 0; // Javascript annoyance; no good way to count # of entries in an object
+    self._transient_streams = new Array(); // For transient sounds, like sound effects.
+    self._volume = 100;
 
     // Public vars:
 
-    this.muted = false;
+    self.muted = false;
 
-    // Private functions:
-
-    var log = function (msg) {
-        if (console) {
-            console.log(msg);
+    $(selector).each(function (idx, obj) {
+        if (obj.id) {
+            self._library[obj.id] = obj;
         }
-    };
+    });
 
-    var init = function () {
-        // Object initialization code.  Should run only once.
+    return;
+}
 
-        $(selector).each(function (idx, obj) {
-            if (obj.id) {
-                library[obj.id] = obj;
-            }
-        });
-    };
-
-    var mute_stream = function (idx, stream) {
+AudioManager.prototype = {
+    log: function (msg) {
+        if (console) {
+            console.log("AudioManager:" + msg);
+        }
+    },
+    mute_stream: function (idx, stream) {
         if (!stream.muted) {
             stream.toggle_mute();
         }
-    };
-
-    var unmute_stream = function (idx, stream) {
+    },
+    unmute_stream: function (idx, stream) {
         if (stream.muted) {
             stream.toggle_mute();
         }
-    };
+    },
+    stream_count: function () {
+        return this._named_streams_count + this._transient_streams.length;
+    },
+    toggle_mute: function () {
+        var self = this;
 
-    // Public functions:
-
-    this.stream_count = function () {
-        return named_streams_count + transient_streams.length;
-    };
-
-    this.toggle_mute = function () {
-        if (this.muted) {
-            $.each(transient_streams, unmute_stream);
-            $.each(named_streams, unmute_stream);
+        if (self.muted) {
+            $.each(self._transient_streams, self.unmute_stream);
+            $.each(self._named_streams, self.unmute_stream);
         }
         else {
-            $.each(transient_streams, mute_stream);
-            $.each(named_streams, mute_stream);
+            $.each(self._transient_streams, self.mute_stream);
+            $.each(self._named_streams, self.mute_stream);
         }
 
-        this.muted = !this.muted;
+        self.muted = !self.muted;
 
-        return this.muted;
-    };
-
-    this.get = function (name) {
+        return self.muted;
+    },
+    get: function (name) {
         // Get a named stream. Transient streams cannot be retrieved.
-        return named_streams[name];
-    };
-
-    this.play = function (id, name, volume, loop) {
+        return this._named_streams[name];
+    },
+    play: function (id, name, vol, loop) {
         // Shortcut that loads sound and plays it.
-        var snd = this.load(id, name, volume);
+        var snd = this.load(id, name, vol);
         snd.play(loop);
 
         return snd;
-    };
-
-    this.load = function (id, name, volume) {
+    },
+    load: function (id, name, vol) {
         // Load sound, return AudioStream object.
         //
         // id: id of <audio> tag
         // name: Name of audio stream, if a named stream
 
         var the_stream = null;
+        var self = this;
 
-        if (volume == null) {
-            volume = 100;
+        if (vol == null) {
+            vol = 100;
         }
 
         if (name) {
-            if (named_streams[name]) { // Existing named stream
-                the_stream = named_streams[name];
-                the_stream.load(library[id]);
+            if (self._named_streams[name]) { // Existing named stream
+                the_stream = self._named_streams[name];
+                the_stream.load(self._library[id]);
             }
             else { // Create a new named stream
                 the_stream = new AudioStream();
-		if (this.muted) {
-		    the_stream.toggle_mute();
-		}
+                if (self.muted) {
+                    the_stream.toggle_mute();
+                }
 
-                named_streams[name] = the_stream;
-                named_streams_count++;
-                named_streams[name].load(library[id]);
+                self._named_streams[name] = the_stream;
+                self._named_streams_count++;
+                self._named_streams[name].load(self._library[id]);
             }
         }
         else {
-            $.each(transient_streams, function (idx, stream) {
+            $.each(self._transient_streams, function (idx, stream) {
                 if (stream.is_ended()) { // Re-use existing transient stream
                     the_stream = stream;
-                    stream.load(library[id]);
+                    the_stream.load(self._library[id]);
+
                     return false; // terminate 'each' loop
                 }
+
                 return true;
             });
 
             if (!the_stream) { // Create a new transient stream
                 the_stream = new AudioStream();
-		if (this.muted) {
-		    the_stream.toggle_mute();
-		}
-                the_stream.load(library[id]);
-                transient_streams.push(the_stream);
+                if (self.muted) {
+                    the_stream.toggle_mute();
+                }
+                the_stream.load(self._library[id]);
+                self._transient_streams.push(the_stream);
             }
         }
 
-        the_stream.set_volume(volume);
+        the_stream.set_volume(vol);
 
         return the_stream;
-    };
+    },
+    get_volume: function () {
+        return parseInt(this._volume);
+    },
+    set_volume: function (vol) {
+        var self = this;
 
-    this.get_volume = function () {
-        return parseInt(volume);
-    };
-
-    this.set_volume = function (vol) {
         if (vol > 100) {
             vol = 100;
         }
@@ -216,30 +195,24 @@ var AudioManager = function (selector) {
             vol = 0;
         }
 
-        volume = vol;
+        self._volume = vol;
 
-        $.each(transient_streams, function (idx, stream) {
-            stream.set_master_volume(volume);
+        $.each(self._transient_streams, function (idx, stream) {
+            stream.set_master_volume(self._volume);
         });
 
-        $.each(named_streams, function (idx, stream) {
+        $.each(self._named_streams, function (idx, stream) {
             if (stream) {
-                stream.set_master_volume(volume);
+                stream.set_master_volume(self._volume);
             }
         });
-    };
-
-    this.volume_up = function (incr) {
+    },
+    volume_up: function (incr) {
         this.set_volume(this.get_volume() + incr);
-    };
-
-    this.volume_down = function (incr) {
+    },
+    volume_down: function (incr) {
         this.set_volume(this.get_volume() - incr);
-    };
-
-    // Init:
-
-    init();
+    }
 };
 
 var AudioStream = function(master_volume) {
@@ -263,113 +236,99 @@ var AudioStream = function(master_volume) {
     if (master_volume == undefined) {
         master_volume = 100;
     }
-    // Private vars:
 
-    var self = this;
-    var premute_vol = 100;
+    this._master_volume = master_volume;
+    this._premute_vol = 100;
 
-    // Public vars:
-
-    this.audio_obj = null;
+    this.audio_obj = new Audio();
     this.muted = false;
 
-    // Private functions:
+    this.set_volume(100);
 
-    var init = function () {
-        // Object initialization code.  Should run only once.
-        self.audio_obj = new Audio();
-        self.set_volume(100);
-    };
+};
 
-    var log = function (msg) {
+AudioStream.prototype = {
+    log: function (msg) {
         if (console) {
-            console.log(msg);
+            console.log("AudioStream: " + msg);
         }
-    };
-
-    // Public functions:
-    this.play_obj = function (orig, loop) {
+    },
+    play_obj: function (orig, loop) {
         // Load and play given audio source.
         this.load(orig);
         this.play(loop);
-    };
-
-    this.load = function (orig) {
+    },
+    load: function (orig) {
         // Start loading given audio object, but do not play it yet.
 
         this.audio_obj.src = orig.src;
         this.audio_obj.load();
-    };
-
-    this.set_master_volume = function (vol) {
+    },
+    set_master_volume: function (vol) {
         var current_volume = this.get_volume();
 
         if (current_volume == 0 && !this.muted) {
             current_volume = 100;
         }
-        master_volume = vol;
+        this._master_volume = vol;
         this.set_volume(current_volume);
-    };
-
-    this.set_volume = function (vol) {
+    },
+    set_volume: function (vol) {
         if (vol < 0) {
             vol = 0;
         }
         if (vol > 100) {
             vol = 100;
         }
+        
+        if (this.muted) {
+            this._premute_vol = vol;
+        }
+        else {
+            vol = vol * (this._master_volume / 100);
+            if (vol != this.get_volume()) { // Setting volume on a raw audio object is strangely expensive
+                this.audio_obj.volume = vol / 100;
+            }
+        }
+        
+    },
+    get_volume: function () {
+        var vol = this.audio_obj.volume;
 
-	if (this.muted) {
-	    premute_vol = vol;
-	}
-	else {
-            vol = vol * (master_volume / 100);
-	    if (vol != this.get_volume()) { // Setting volume is strangely expensive
-		this.audio_obj.volume = vol / 100;
-	    }
-	}
+        if (this.muted) {
+            vol = this._premute_vol;
+        }
 
-    };
-
-    this.get_volume = function () {
-	vol = this.audio_obj.volume;
-	if (this.muted) {
-	    vol = premute_vol;
-	}
-
-        if (master_volume == 0) {
+        if (this._master_volume == 0) {
             return vol * 100;
         }
-        return parseInt((vol * 100) * (100 / master_volume));
-    };
 
-    this.volume_up = function (incr) {
+        return parseInt((vol * 100) * (100 / this._master_volume));
+    },
+    volume_up: function (incr) {
         this.set_volume(this.get_volume() + incr);
-    };
-
-    this.volume_down = function (incr) {
+    },
+    volume_down: function (incr) {
         this.set_volume(this.get_volume() - incr);
-    };
-
-    this.toggle_mute = function () {
+    },
+    toggle_mute: function () {
         if (this.muted) {
-	    this.muted = false;
-            this.set_volume(premute_vol);
+            this.muted = false;
+            this.set_volume(this._premute_vol);
         }
         else {
             this.set_volume(0);
-	    this.muted = true;
+            this.muted = true;
         }
 
         return this.muted;
-    };
-
-    this.is_ended = function () {
+    },
+    is_ended: function () {
         return this.audio_obj.ended;
-    };
-
-    this.play = function(loop) {
-        this.audio_obj.play();
+    },
+    play: function(loop) {
+        var self = this;
+        self.audio_obj.play();
 
         if (loop) {
             $(self.audio_obj).bind('ended', function (event) {
@@ -378,13 +337,9 @@ var AudioStream = function(master_volume) {
             });
 
         }
-    };
-
-    this.pause = function() {
+    },
+    pause: function() {
         this.audio_obj.pause();
-    };
-
-    // Init:
-
-    init();
+    }
 };
+

@@ -1,8 +1,9 @@
+"use strict";
 /*
 
    starship.js - Prototype for 'Game' object. 'Game' runs the whole show.
 
-   Copyright (c) 2010 Robin Norwood <robin.norwood@gmail.com>
+   Copyright (c) 2013 Robin Norwood <robin.norwood@gmail.com>
 
       This file is part of Starship.
 
@@ -28,222 +29,123 @@
  *  http://diveintohtml5.org/canvas.html
  */
 
-var Game = function () {
-    // Private vars:
 
-    var self = this;
+var Starship = function () {
+    this.playlist_pos = -1;
+    this.playlist = $('.music');
 
-    var entities = {};
+    this.canvas = $('#starship_canvas')[0];
 
-    var tics = 40; // Minimum ms per update
+    this.width = 1000;
+    this.height = 750;
 
-    var playlist_pos = -1;
+};
 
-    // Public vars:
+Starship.prototype = {
+    initCallback: function (controller) {
+/*        this.resizeCanvas(); // FIXME: make this work
 
-    this.canvas = null;
-    this.context = null;
-    this.lastTime = (new Date()).getTime();
-
-    this.entities = entities;
-
-    // Private functions:
-
-    function init () {
-        /* Game initialization code.  Should run only once. */
-        self.canvas = $('#starship_canvas')[0];
-        self.context = self.canvas.getContext("2d");
-
-        self.util = new Util();
-        self.audio = new AudioManager();
-
-        resizeCanvas();
-
+        var self = this;
         $(window).bind('resize', self, function (e) {
-            /* Many browsers fire multiple resize events during window resizing.
-             * Put the resize event on a timer so we don't call it too often. */
-            $.doTimeout('resize', 100, resizeCanvas);
-        });
-        $(window).bind('keydown', function (e) {
-            if (self.entities.message) {
-                self.entities.message.state.speed = 10;
-            }
-            switch(e.which) {
-                case 37: // left arrow
-                    self.entities.ship.beginRotate(1);
-                    break;
-                case 38: // up arrow
-                    self.entities.ship.beginAccelerate(1);
-                    break;
-                case 39: // right arrow
-                    self.entities.ship.beginRotate(-1);
-                    break;
-                case 88: // x
-                    self.entities.ship.fire();
-                    break;
-                case 77: // m
-                    var is_muted = self.audio.toggle_mute();
-                    if (is_muted) {
-                        self.entities.audio_indicator = new Indicator(self, self.canvas.width - 25, self.canvas.height - 25, 'audio_mute');
-                    }
-                    else {
-                        self.entities.audio_indicator = new Indicator(self, self.canvas.width - 25, self.canvas.height - 25, 'audio', 5000);
-                    }
+            // Many browsers fire multiple resize events during window resizing.
+            // Put the resize event on a timer so we don't call it too often.
+            $.doTimeout('resize', 100, function () {self.resizeCanvas(controller)});
+        });*/
 
-            };
-        });
-        $(window).bind('keyup', function (e) {
-            switch(e.which) {
-                case 37: // left arrow
-                    self.entities.ship.endRotate();
-                    break;
-                case 38: // up arrow
-                    self.entities.ship.endAccelerate();
-                    break;
-                case 39: // right arrow
-                    self.entities.ship.endRotate();
-                    break;
-            };
-        });
-    };
+        return {width: this.width,
+                height: this.height
+               }; // config
+    },
 
-    var resizeCanvas = function () {
-        $(self.canvas).attr("height", $(window).height());
-        $(self.canvas).attr("width", $(window).width());
-        if (entities.stars) {
-            entities.stars = new Stars(self);
-        }
-    };
+    resizeCanvas: function (controller) {
+        $(this.canvas).attr("height", $(window).height());
+        $(this.canvas).attr("width", $(window).width());
+        controller.entities.stars = new Stars(self);
+    },
 
-    var update = function () {
-        /* Main loop */
-        var curTime = (new Date()).getTime();
-        var deltaTime = curTime - self.lastTime;
-        self.lastTime = curTime;
-
-        // Update everything's state
-        $.each(self.entities, function (x,entity) {
-            var keep = entity.update(curTime, deltaTime);
-            if (!keep) {
-                delete entity; // delete entity
-                delete entities[x]; // remove from entities object
-            }
-            return keep;
-        });
-
-        // Clear the screen
-        self.context.clearRect(0, 0, self.canvas.width, self.canvas.height);
-
-        // Draw
-        $.each(entities, function (k, entity) {
-            self.context.save();
-            entity.draw();
-            self.context.restore();
-        });
-
+    loopCallback: function (controller, elapsed) {
         // Create the target if it has been destroyed
-        if (!self.entities.target) {
-            self.entities.target = new Target(self, self.canvas.width/2, 200, 45, 5, 20);
-            self.entities.score.state.messages[0] += 1;
+        if (!controller.entities.target) {
+            controller.entities.target = new Target(this.canvas.width/2, 200, 45, 5, 20);
+            controller.entities.score.messages[0] += 1;
         }
 
-        if (!self.audio.get('music') || self.audio.get('music').is_ended()) {
-            play_next(); // FIXME: This causes the game to 'jump' - figure out how to load next track in the background.
+        if (!controller.audio.get('music') || controller.audio.get('music').is_ended()) {
+            this.play_next(controller); // FIXME: This causes the game to 'jump' - figure out how to load next track in the background.
         }
 
-        var time = (new Date()).getTime() - curTime;
-        var delay = tics - time;
-        if (delay < 0) {
-            delay = 0;
-            if (console) {
-                console.log("Main loop took too long: " + time);
+        if (Utils.contains(controller.state.keyspressed, "m")) {
+            var is_muted = controller.audio.toggle_mute();
+            if (is_muted) {
+                controller.entities.audio_indicator = new Indicator(this.canvas.width - 25, this.canvas.height - 25, 'audio_mute');
+            }
+            else {
+                controller.entities.audio_indicator = new Indicator(this.canvas.width - 25, this.canvas.height - 25, 'audio', 5000);
             }
         }
 
-        $.doTimeout('update-game', delay, update);
-    };
+        return true;
+    },
 
-    var play_next = function () {
-        var playlist = $('.music');
-        playlist_pos++;
+    play_next: function (controller) {
+        this.playlist_pos++;
 
-        if (playlist_pos > playlist.length - 1) {
-            playlist_pos = 0;
+        if (this.playlist_pos > this.playlist.length - 1) {
+            this.playlist_pos = 0;
         }
 
-        self.audio.play(playlist[playlist_pos].id, 'music');
-    };
+        controller.audio.play(this.playlist[this.playlist_pos].id, 'music');
+    },
 
-    var start = function() {
-        entities.stars = new Stars(self);
-        entities.target = new Target(self, self.canvas.width / 2, 150, 45, 5, 20);
-        entities.ship = new Ship(self, self.canvas.width / 2, self.canvas.height / 2, 0, 0);
-        entities.bullets = new Bullets(self);
-        entities.score = new Message(self, [0], 5, 29, '24px monospace', 'rgba(255, 255, 255, 0.75)');
-        entities.message = new Message(self,
-                                       ["Starship",
-                                        "An HTML5 canvas demo",
-                                        "Shoot the target",
-                                        "Arrow keys: move",
-                                        "x: fire",
-                                        "m: mute audio",
-                                        "Music: Musical Landscapes I by Galdson"
-                                       ],
-                                       self.canvas.width/2,
-                                       self.canvas.height/2 - 150,
-                                       'bold 50px sans-serif',
-                                       'rgba(255, 255, 255, 0.75)',
-                                       'center',
-                                       null,
-                                       null,
-                                       20000,
-                                       30000
-                                      );
-        $.doTimeout('update-game', tics, update);
-    };
-
-    // Public functions:
-
-    this.check_for_hits = function (source, x, y) {
-        var hit_something = false;
-        $.each(entities, function(k, entity) {
-            if (entity.check_hit(source, x, y)) {
-                hit_something = true;
-                return false; // Stop checking for hits
-            }
-            return true;
-        });
-
-        return hit_something;
-    };
-
-    this.load = function() {
+    loadCallback: function(controller) {
         // A short delay to give the various data (especially the music) time to load.
         // FIXME: Instead, watch for a ready event on the audio object.
 
-        this.context.save();
-        this.context.font = 'bold 50px sans-serif';
-        this.context.textAlign = 'center';
-        this.context.fillStyle = 'rgba(255, 255, 255, 0.5)';
+        controller.screen.context.save();
+        controller.screen.context.font = 'bold 50px sans-serif';
+        controller.screen.context.textAlign = 'center';
+        controller.screen.context.fillStyle = 'rgba(255, 255, 255, 0.75)';
 
-        this.context.fillText("Loading...", this.canvas.width/2, this.canvas.height/2);
-        this.context.restore();
+        controller.screen.context.fillText("Loading...", this.canvas.width/2, this.canvas.height/2);
+        controller.screen.context.restore();
 
-        play_next();
+        controller.audio.toggle_mute();
+        this.play_next(controller);
 
-        $.doTimeout('update-game', 5000, start);
-    };
+        controller.entities.stars = new Stars(this.canvas.width, this.canvas.height);
+        controller.entities.target = new Target(this.canvas.width / 2, 50, 45, .1, 20);
+        controller.entities.ship = new Ship(this.canvas.width / 2, this.canvas.height / 2, 0, 0);
+        controller.entities.score = new Message([0], 5, 29, '24px monospace', 'rgba(255, 255, 255, 0.75)');
+        controller.entities.message = new Message(["Starship",
+                                                   "An HTML5 canvas demo",
+                                                   "Shoot the target",
+                                                   "Arrow keys: move",
+                                                   "x: fire",
+                                                   "m: mute audio",
+                                                   "Music: Musical Landscapes I by Galdson"
+                                                  ],
+                                                  this.canvas.width/2,
+                                                  this.canvas.height/2 - 150,
+                                                  'bold 50px sans-serif',
+                                                  'rgba(255, 255, 255, 0.75)',
+                                                  'center',
+                                                  Math.PI * 2,
+                                                  0,
+                                                  6000,
+                                                  10000
+                                                 );
 
-    // Init:
+        controller.start();
+//        $.doTimeout('update-game', 5000, controller.start);
 
-    init();
+        return true;
+    }
 
-    return true;
 };
 
 // Init and run the game
 $(document).ready(function () {
-    var game = new Game();
-    game.load();
+    var game = new Starship();
+    var controller = new Controller(game); // starts looping
 });
 
