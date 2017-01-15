@@ -56,7 +56,7 @@ var Controller = function (game) {
                  };
 
     this.lastUpdateTime = (new Date()).getTime();
-    this.game = game; //FIXME //TODO: Remember why this is a "FIXME"... :-/ //UPDATE: Nope
+    this.game = game;
     this.keyhandler = new Keyhandler();
 
     var config = this.game.initCallback(this);
@@ -201,13 +201,13 @@ Controller.prototype = {
             var now = (new Date()).getTime();
             var elapsed = now - self.lastUpdateTime;
             self.lastUpdateTime = now;
-            
+
             var cont = self.game.loopCallback(self, elapsed);
-            
+
             self.screen.cursor("default");
             self.update(elapsed, self); // update the state of all entities.
             self.render(self.screen); // draw all entities.
-            
+
             self.state = { "keysdown": self.state.keysdown,
                            "keyspressed": [],
                            "pointerpos": self.state.pointerpos,
@@ -216,7 +216,7 @@ Controller.prototype = {
                            "pointerclicked": false,
                            "gamestate": self.state.gamestate
                          };
-            
+
             if (cont) {
                 requestAnimFrame(animloop); // repeat
             }
@@ -241,4 +241,3 @@ Controller.prototype = {
     }
 
 };
-
